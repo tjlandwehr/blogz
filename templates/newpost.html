@@ -2,4 +2,39 @@
 
 {% block content %}
 
+<form action="/newpost" method='POST'>
+    <label>
+        Title for your new blog:<br />
+        <input type="text" name="title" value="{{blog_title}}" />
+    </label>
+    {% with messages = get_flashed_messages(category_filter=["title_error"]) %}
+        {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <br />
+    <br />
+    <br />
+    <label>
+        Your new blog:<br />
+        <textarea rows="9" cols="25" name="body" value="{{blog_body}}" >{{blog_body}}</textarea>
+    </label>
+    {% with messages = get_flashed_messages(category_filter=["body_error"]) %}
+        {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <br />
+    <br />
+    <input type="submit" name="Add Entry" />
+</form>
+
 {% endblock %}
