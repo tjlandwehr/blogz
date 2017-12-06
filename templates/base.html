@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{title}}</title>
+        <style>
+            .error {
+                color: red;
+            }
+        </style>
+    </head>
+<body>
+
+    <div style="display:inline-block;">
+        <a href='/blog'>Main Blog Page</a>
+        &nbsp;
+        <a href='/newpost'>Add a Blog Entry</a>
+    </div>
+
+    <h1 style="text-align:center;">{{heading}}</h1>
+
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>
