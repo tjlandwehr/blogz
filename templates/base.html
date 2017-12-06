@@ -17,7 +17,13 @@
         &nbsp;&nbsp;
         <a href='/newpost'>Add a Blog Entry</a>
     </nav>
-
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        <ul>
+        {% for category,message in messages %}
+            <li class="{{category}}">{{message}}</li>
+        {% endfor %}
+        </ul>
+    {% endwith %}
     <h1 style="text-align:center;">{{heading}}</h1>
 
     {% block content %}

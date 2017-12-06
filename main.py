@@ -27,6 +27,16 @@ def get_current_blogs():
 
 @app.route('/blog')
 def show_blogs():
+    blog_post_value = request.args.get('id')
+    if blog_post_value:
+        blog = Blog.query.get(blog_post_value)
+        if not blog:
+            error = "{0} is not a valid blog post ID.".format(blog_post_value)
+            flash(error, "flashes")
+            return render_template('blog.html', title="Build A Blog", heading="Build a Blog", blogs=get_current_blogs())
+        else:
+            return render_template('post.html', title=blog.title, heading=blog.title, body=blog.body)
+
     return render_template('blog.html', title="Build A Blog", heading="Build a Blog", blogs=get_current_blogs())
 
 @app.route('/newpost', methods=['POST', 'GET'])

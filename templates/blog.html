@@ -6,7 +6,7 @@
     <p>No blog posts yet!</p>
 {% else %}
     {% for blog in blogs %}
-    <h2>{{blog.title}}</h2>
+    <h2><a href="/blog?id={{blog.id}}" alt="Blog Post: {{blog.title}}" title="{{blog.title}}" >{{blog.title}}</a></h2>
     <p>{{blog.body}}</p>
     <hr />
     {% endfor %}
