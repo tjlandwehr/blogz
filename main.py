@@ -32,7 +32,7 @@ def show_blogs():
         blog = Blog.query.get(blog_post_value)
         if not blog:
             error = "{0} is not a valid blog post ID.".format(blog_post_value)
-            flash(error, "flashes")
+            flash(error, "id_error")
             return render_template('blog.html', title="Build A Blog", heading="Build a Blog", blogs=get_current_blogs())
         else:
             return render_template('post.html', title=blog.title, heading=blog.title, body=blog.body)
@@ -58,7 +58,7 @@ def new_post():
             new_blog = Blog(blog_title, blog_body)
             db.session.add(new_blog)
             db.session.commit()
-            return redirect('/blog')
+            return redirect('/blog?id=' + str(new_blog.id))
 
     return render_template('newpost.html', title="Add Blog Entry", heading="Add a Blog Entry", 
         blog_title=blog_title, blog_body=blog_body)

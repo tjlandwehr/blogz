@@ -17,12 +17,14 @@
         &nbsp;&nbsp;
         <a href='/newpost'>Add a Blog Entry</a>
     </nav>
-    {% with messages = get_flashed_messages(with_categories=True) %}
-        <ul>
-        {% for category,message in messages %}
-            <li class="{{category}}">{{message}}</li>
-        {% endfor %}
-        </ul>
+    {% with messages = get_flashed_messages(category_filter=["id_error"]) %}
+        {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
     {% endwith %}
     <h1 style="text-align:center;">{{heading}}</h1>
 
