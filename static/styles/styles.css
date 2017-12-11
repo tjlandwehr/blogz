@@ -1,0 +1,99 @@
+@charset utf-8;
+/* CSS Document */
+
+/* -----------------------
+Base styles
+------------------------*/
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+	color: #59407F;
+	background-color: #eee;
+	font: 1em/1.2 "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;
+}
+
+.wrapper {
+	width: 724px;
+	margin: 0 auto 0 auto;
+	border-radius: 10px;
+    border: 1px solid #DDDDDD;
+	box-shadow: 5px 5px 5px #DDDDDD;
+    overflow: hidden;
+}
+
+header {
+	width: 644px;
+	margin: 0 auto 0 auto;
+    padding-top: 10px;
+    color: #59407F;
+	padding: 1em 1.25em;
+	text-align: center;
+}
+
+h1,h2,h3,h4,h5,h6 {
+	margin: 0 0 .5em;
+	font-weight: 500;
+    line-height: 1.1;
+    text-align: center;
+}
+
+h1 {
+	font-size: 2.25em; /* 36px */
+}
+h2 {
+	font-size: 1.75em; /* 28px */
+}
+h3 {
+	font-size: 1.375em; /* 22px */
+}
+h4 {
+	font-size: 1.125em; /* 18px */
+}
+h5 {
+	font-size: 1em; /* 16px */
+}
+h6 {
+	font-size: .875em; /* 14px */
+}
+
+p {
+    margin: 1em 1em 1.5em;
+    padding: 0.5em, 1em;
+	line-height: 1.5;
+}
+
+a:link {
+	color: royalblue;
+}
+a:visited {
+	color: purple;
+}
+a:focus {
+	color: black;
+}
+a:hover {
+	color: green;
+}
+a:active {
+	color: red;
+}
+
+/* -----------------------
+Layout styles
+------------------------*/
+
+.content {
+	padding: 1em 1.25em;
+	background-color: #fff;
+}
+
+.footer {
+	color: #FFF;
+	background: #59407F;
+	padding: 1em 1.25em;
+	text-align: center;
+}

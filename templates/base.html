@@ -2,6 +2,8 @@
 <html>
     <head>
         <title>{{title}}</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/reset.css') }}">
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/styles.css') }}">
         <style>
             .flashes {
                 color: red;
@@ -11,8 +13,9 @@
         </style>
     </head>
 <body>
-
-    <nav style="display:inline-block;">
+    <br />
+    <div class="wrapper">
+    <nav>
         <a href='/blog'>Main Blog Page</a>
         &nbsp;&nbsp;
         <a href='/newpost'>Add a Blog Entry</a>
@@ -26,10 +29,10 @@
             </ul>
         {% endif %}
     {% endwith %}
-    <h1 style="text-align:center;">{{heading}}</h1>
+    <header><h1>{{heading}}</h1></header>
 
     {% block content %}
     {% endblock %}
-
+    </div>
 </body>
 </html>
