@@ -5,7 +5,7 @@
         <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/reset.css') }}">
         <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/styles.css') }}">
         <style>
-            .flashes {
+            .flashes, .error {
                 color: red;
                 font-style: italic;
                 list-style-type: none;
@@ -16,9 +16,19 @@
     <br />
     <div class="wrapper">
     <nav>
+        <a href='/'>Home</a>
+        &nbsp;&nbsp;&nbsp;&nbsp;
         <a href='/blog'>Main Blog Page</a>
-        &nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        {% if session['username'] %}
         <a href='/newpost'>Add a Blog Entry</a>
+        {% endif %}
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <a href='/login'>Login</a>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        {% if session['username'] %}
+        <a href='/logout'>Logout</a>
+        {% endif %}
     </nav>
     {% with messages = get_flashed_messages(category_filter=["id_error"]) %}
         {% if messages %}

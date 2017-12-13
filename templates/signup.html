@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form action='/signup' method='POST'>
+    <table>
+        <tbody>
+            <tr>
+                <td>
+                    <label for="username">Username</label>
+                </td>
+                <td>
+                    <input name="username" type="text" {% if username %}value="{{username}}"{% endif %} />
+                    <span class="error">{% if username_error %}{{username_error}}{% endif %}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="password">Password</label>
+                </td>
+                <td>
+                    <input name="password" type="password" />
+                    <span class="error">{% if password_error %}{{password_error}}{% endif %}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="verify">Verify Password</label>
+                </td>
+                <td>
+                    <input name="verify" type="password" />
+                    <span class="error">{% if verify_error %}{{verify_error}}{% endif %}</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <input type="submit" value="Submit" />
+</form>
+
+{% endblock %}
