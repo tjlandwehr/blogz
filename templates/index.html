@@ -2,6 +2,14 @@
 
 {% block content %}
 
-Test
+{% if users|length == 0 %}
+    <p>No blog users yet!</p>
+{% else %}
+    {% for user in users %}
+    <h2><a href="/blog?user={{user.username}}" alt="Blog User: {{user.username}}" 
+        title="{{user.username}}" >{{user.username}}</a></h2>
+    <hr />
+    {% endfor %}
+{% endif %}
 
 {% endblock %}

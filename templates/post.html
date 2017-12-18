@@ -3,5 +3,6 @@
 {% block content %}
 
 <p>{{body}}</p>
+<p class="post-author">Written by <a href="/blog?user={{owner}}">{{owner}}</a> on {{date_created.strftime('%m-%d-%Y at %H:%M:%S')}}</p>
 
 {% endblock %}
