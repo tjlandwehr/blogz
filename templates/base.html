@@ -16,13 +16,15 @@
     <br />
     <div class="wrapper">
     <nav>
-        <a href='/'>Home</a>
+        <a href='/1'>Home</a>
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <a href='/blog'>Main Blog Page</a>
+        <a href='/blog/1'>Main Blog Page</a>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <a href='/newpost'>Add a Blog Entry</a>
         &nbsp;&nbsp;&nbsp;&nbsp;
+        {% if not session['username'] %}
         <a href='/login'>Login</a>
+        {% endif %}
         &nbsp;&nbsp;&nbsp;&nbsp;
         {% if session['username'] %}
         <a href='/logout'>Logout</a>

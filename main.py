@@ -43,18 +43,19 @@ class User(db.Model):
     def __repr__(self):
         return ('<Username: %r>') % (self.username)
 
-def get_current_blogs():
+def get_current_blogs(page_num):
     # List of Blog instances
-    return Blog.query.order_by(Blog.pub_date.desc()).all()
+    return Blog.query.order_by(Blog.pub_date.desc()).paginate(per_page=2, page=page_num, error_out=True)
 
-def get_current_users():
+def get_current_users(page_num):
     # List of User instances
-    return User.query.all()
+    return User.query.order_by(User.username).paginate(per_page=2, page=page_num, error_out=True)
 
-def get_user_blogs(username):
+def get_user_blogs(username, page_num):
     # List of blogs by a specific user
     owner = User.query.filter_by(username=username).first()
-    return Blog.query.filter_by(owner=owner).order_by(Blog.pub_date.desc()).all()
+    return Blog.query.filter_by(owner=owner).order_by(Blog.pub_date.desc()).paginate(per_page=2, 
+        page=page_num, error_out=True)
 
 @app.before_request
 def require_login():
@@ -62,12 +63,12 @@ def require_login():
     if request.endpoint not in allowed_routes and 'username' not in session:
         return redirect('/login')
 
-@app.route('/')
-def index():
-    return render_template('index.html', title="Blogz | Blog Users", heading="Blog Users", users=get_current_users())
+@app.route('/<int:page_num>')
+def index(page_num):
+    return render_template('index.html', title="Blogz | Blog Users", heading="Blog Users", users=get_current_users(page_num))
 
-@app.route('/blog')
-def list_blogs():
+@app.route('/blog/<int:page_num>')
+def list_blogs(page_num):
     blog_post_value = request.args.get('id')
     userID = request.args.get('user')
     if blog_post_value:
@@ -75,7 +76,7 @@ def list_blogs():
         if not blog:
             error = "{0} is not a valid blog post ID.".format(blog_post_value)
             flash(error, "id_error")
-            return render_template('blog.html', title="Blogz | Blog Posts", heading="Blog Posts", blogs=get_current_blogs())
+            return render_template('blog.html', title="Blogz | Blog Posts", heading="Blog Posts", blogs=get_current_blogs(page_num))
         else:
             return render_template('post.html', title="Blogz | " + blog.title, heading=blog.title, body=blog.body, 
                 owner=blog.owner.username, date_created=blog.pub_date)
@@ -84,12 +85,13 @@ def list_blogs():
         if not user:
             error = "{0} is not a valid blog user.".format(userID)
             flash(error, "id_error")
-            return render_template('blog.html', title="Blogz | Blog Posts", heading="Blog Posts", blogs=get_current_blogs())
+            return render_template('blog.html', title="Blogz | Blog Posts", heading="Blog Posts", blogs=get_current_blogs(page_num))
         else:
             return render_template('user.html', title="Blogz | Blog Posts by " + userID, 
-                heading="Blog Posts by " + userID, blogs=get_user_blogs(userID))
+                heading="Blog Posts by " + userID, blogs=get_user_blogs(userID, page_num))
+    # elif page_num:
 
-    return render_template('blog.html', title="Blogz | Blog Posts", heading="Blog Posts", blogs=get_current_blogs())
+    return render_template('blog.html', title="Blogz | Blog Posts", heading="Blog Posts", blogs=get_current_blogs(page_num))
 
 @app.route('/newpost', methods=['POST', 'GET'])
 def new_post():
@@ -111,7 +113,7 @@ def new_post():
             new_blog = Blog(blog_title, blog_body, owner)
             db.session.add(new_blog)
             db.session.commit()
-            return redirect('/blog?id=' + str(new_blog.id))
+            return redirect('/blog/1?id=' + str(new_blog.id))
 
     return render_template('newpost.html', title="Blogz | New Post", heading="New Post", 
         blog_title=blog_title, blog_body=blog_body)
@@ -142,7 +144,7 @@ def login():
 @app.route('/logout')
 def logout():
     del session['username']
-    return redirect('/blog')
+    return redirect('/blog?page_num=1')
 
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():

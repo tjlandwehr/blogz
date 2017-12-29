@@ -2,14 +2,22 @@
 
 {% block content %}
 
-{% if users|length == 0 %}
+{% if users.items|length == 0 %}
     <p>No blog users yet!</p>
 {% else %}
-    {% for user in users %}
-    <h2><a href="/blog?user={{user.username}}" alt="Blog User: {{user.username}}" 
+    {% for user in users.items %}
+    <h2><a href="/blog/1?user={{user.username}}" alt="Blog User: {{user.username}}" 
         title="{{user.username}}" >{{user.username}}</a></h2>
     <hr />
     {% endfor %}
 {% endif %}
+
+{% for page in users.iter_pages(left_edge=3, right_edge=3, left_current=3, right_current=3) %}
+    {% if page %}
+        <a href="/{{ page }}">{{ page }}</a>
+    {% else %}
+        ...
+    {% endif %}
+{% endfor %}
 
 {% endblock %}

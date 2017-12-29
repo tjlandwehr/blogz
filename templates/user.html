@@ -2,15 +2,23 @@
 
 {% block content %}
 
-{% if blogs|length == 0 %}
+{% if blogs.items|length == 0 %}
     <p>No blog posts yet!</p>
 {% else %}
-    {% for blog in blogs %}
-    <h2><a href="/blog?id={{blog.id}}" alt="Blog Post: {{blog.title}}" title="{{blog.title}}" >{{blog.title}}</a></h2>
+    {% for blog in blogs.items %}
+    <h2><a href="/blog/1?id={{blog.id}}" alt="Blog Post: {{blog.title}}" title="{{blog.title}}" >{{blog.title}}</a></h2>
     <p>{{blog.body}}</p>
-    <p class="post-author">Written by <a href="/blog?user={{blog.owner.username}}">{{blog.owner.username}}</a> on {{blog.pub_date.strftime('%m-%d-%Y at %H:%M:%S')}}</p>
+    <p class="post-author">Written by <a href="/blog/1?user={{blog.owner.username}}">{{blog.owner.username}}</a> on {{blog.pub_date.strftime('%m-%d-%Y at %H:%M:%S')}}</p>
     <hr />
     {% endfor %}
 {% endif %}
+
+{% for page in blogs.iter_pages(left_edge=3, right_edge=3, left_current=3, right_current=3) %}
+    {% if page %}
+        <a href="/blog/{{ page }}?user={{blogs.items[0].owner.username}}">{{ page }}</a>
+    {% else %}
+        ...
+    {% endif %}
+{% endfor %}
 
 {% endblock %}
