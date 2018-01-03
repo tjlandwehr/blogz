@@ -20,4 +20,17 @@
     {% endif %}
 {% endfor %}
 
+<form action="/1" method="POST">
+    <label>
+        Items Per Page:
+        <select name="view_items">
+            {% for view_items in [10, 25, 50, 100] %}
+            <option {% if view_items == num_items %}selected{% endif %}>{{ view_items }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <input type="hidden" name="view_items" value="{{ num_items }}"/>
+    <input type="submit" value="Update!"/>
+</form>
+
 {% endblock %}

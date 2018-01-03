@@ -11,7 +11,6 @@
     <p class="post-author">Written by <a href="/blog/1?user={{blog.owner.username}}">{{blog.owner.username}}</a> on {{blog.pub_date.strftime('%m-%d-%Y at %H:%M:%S')}}</p>
     <hr />
     {% endfor %}
-{% endif %}
 
 {% for page in blogs.iter_pages(left_edge=3, right_edge=3, left_current=3, right_current=3) %}
     {% if page %}
@@ -20,5 +19,20 @@
         ...
     {% endif %}
 {% endfor %}
+
+<form action="/blog/1?user={{blogs.items[0].owner.username}}" method="POST">
+    <label>
+        Items Per Page:
+        <select name="view_items">
+            {% for view_items in [10, 25, 50, 100] %}
+            <option {% if view_items == num_items %}selected{% endif %}>{{ view_items }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <input type="hidden" name="view_items" value="{{ num_items }}"/>
+    <input type="submit" value="Update!"/>
+</form>
+
+{% endif %}
 
 {% endblock %}

@@ -27,6 +27,8 @@
         {% endif %}
         &nbsp;&nbsp;&nbsp;&nbsp;
         {% if session['username'] %}
+        Logged in as <a href="/blog/1?user={{session['username']}}">{{session['username']}}</a>
+        &nbsp;&nbsp;&nbsp;&nbsp;
         <a href='/logout'>Logout</a>
         {% endif %}
     </nav>

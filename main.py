@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template, session, flash
+from flask import Flask, request, redirect, render_template, session, flash, make_response
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import cgi
@@ -43,19 +43,29 @@ class User(db.Model):
     def __repr__(self):
         return ('<Username: %r>') % (self.username)
 
-def get_current_blogs(page_num):
+def get_current_blogs(page_num, num_items):
     # List of Blog instances
-    return Blog.query.order_by(Blog.pub_date.desc()).paginate(per_page=2, page=page_num, error_out=True)
+    return Blog.query.order_by(Blog.pub_date.desc()).paginate(per_page=num_items, page=page_num, error_out=True)
 
-def get_current_users(page_num):
+def get_current_users(page_num, num_items):
     # List of User instances
-    return User.query.order_by(User.username).paginate(per_page=2, page=page_num, error_out=True)
+    return User.query.order_by(User.username).paginate(per_page=num_items, page=page_num, error_out=True)
 
-def get_user_blogs(username, page_num):
+def get_user_blogs(username, page_num, num_items):
     # List of blogs by a specific user
     owner = User.query.filter_by(username=username).first()
-    return Blog.query.filter_by(owner=owner).order_by(Blog.pub_date.desc()).paginate(per_page=2, 
+    return Blog.query.filter_by(owner=owner).order_by(Blog.pub_date.desc()).paginate(per_page=num_items, 
         page=page_num, error_out=True)
+
+def get_num_items():
+    num = int(request.cookies.get('num_items', 10))
+    return num
+
+def set_num_items(this_template, this_title, this_heading, this_current_group, num):
+    resp = make_response(render_template(this_template, title=this_title, heading=this_heading, 
+        blogs=this_current_group, num_items=int(num)))
+    resp.set_cookie('num_items', num)
+    return resp
 
 @app.before_request
 def require_login():
@@ -63,11 +73,21 @@ def require_login():
     if request.endpoint not in allowed_routes and 'username' not in session:
         return redirect('/login')
 
-@app.route('/<int:page_num>')
+@app.route('/<int:page_num>', methods=['GET', 'POST'])
 def index(page_num):
-    return render_template('index.html', title="Blogz | Blog Users", heading="Blog Users", users=get_current_users(page_num))
 
-@app.route('/blog/<int:page_num>')
+    if request.method == 'POST':
+        num = request.form['view_items']
+        resp = make_response(render_template('index.html', title="Blogz | Blog Users", heading="Blog Users",
+            users=get_current_users(page_num, int(num)), num_items=int(num)))
+        resp.set_cookie('num_items', num)
+        return resp
+        # return set_user_num_items('index.html', "Blogz | Blog Users", "Blog Users", get_current_users(page_num), num)
+    else:
+        return render_template('index.html', title="Blogz | Blog Users", heading="Blog Users",
+            users=get_current_users(page_num, get_num_items()), num_items=get_num_items())
+
+@app.route('/blog/<int:page_num>', methods=['GET', 'POST'])
 def list_blogs(page_num):
     blog_post_value = request.args.get('id')
     userID = request.args.get('user')
@@ -76,7 +96,8 @@ def list_blogs(page_num):
         if not blog:
             error = "{0} is not a valid blog post ID.".format(blog_post_value)
             flash(error, "id_error")
-            return render_template('blog.html', title="Blogz | Blog Posts", heading="Blog Posts", blogs=get_current_blogs(page_num))
+            return render_template('blog.html', title="Blogz | Blog Posts", heading="Blog Posts",
+                blogs=get_current_blogs(page_num, get_num_items()), num_items=get_num_items())
         else:
             return render_template('post.html', title="Blogz | " + blog.title, heading=blog.title, body=blog.body, 
                 owner=blog.owner.username, date_created=blog.pub_date)
@@ -85,13 +106,23 @@ def list_blogs(page_num):
         if not user:
             error = "{0} is not a valid blog user.".format(userID)
             flash(error, "id_error")
-            return render_template('blog.html', title="Blogz | Blog Posts", heading="Blog Posts", blogs=get_current_blogs(page_num))
+            return render_template('blog.html', title="Blogz | Blog Posts", heading="Blog Posts",
+                blogs=get_current_blogs(page_num, get_num_items()), num_items=get_num_items())
+        elif request.method == 'POST':
+            num = request.form['view_items']
+            return set_num_items('user.html', "Blogz | Blog Posts by " + userID, 
+                "Blog Posts by " + userID, get_user_blogs(userID, page_num, int(num)), num)
         else:
             return render_template('user.html', title="Blogz | Blog Posts by " + userID, 
-                heading="Blog Posts by " + userID, blogs=get_user_blogs(userID, page_num))
-    # elif page_num:
-
-    return render_template('blog.html', title="Blogz | Blog Posts", heading="Blog Posts", blogs=get_current_blogs(page_num))
+                heading="Blog Posts by " + userID, blogs=get_user_blogs(userID, page_num, get_num_items()), 
+                num_items=get_num_items())
+    elif request.method == 'POST':
+        num = request.form['view_items']
+        return set_num_items('blog.html', "Blogz | Blog Posts", 
+            "Blog Posts", get_current_blogs(page_num, int(num)), num)
+    else:
+        return render_template('blog.html', title="Blogz | Blog Posts", heading="Blog Posts", 
+            blogs=get_current_blogs(page_num, get_num_items()), num_items=get_num_items())
 
 @app.route('/newpost', methods=['POST', 'GET'])
 def new_post():
@@ -144,7 +175,7 @@ def login():
 @app.route('/logout')
 def logout():
     del session['username']
-    return redirect('/blog?page_num=1')
+    return redirect('/blog/1')
 
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
